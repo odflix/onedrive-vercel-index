@@ -45,6 +45,8 @@ const EPUBPreview = dynamic(() => import('./previews/EPUBPreview'), {
   ssr: false,
 })
 
+import siteConfig from '../site.config.js' // Import site config
+
 /**
  * Convert url query into path string
  *
@@ -163,6 +165,9 @@ const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
   const path = queryToPath(query)
 
   const { data, error, size, setSize } = useProtectedSWRInfinite(path)
+
+  // Check if the path is in the hideFilesMeta list
+  const shouldHideMeta = siteConfig.hideFilesMeta.includes(path)
 
   if (error) {
     // If error includes 403 which means the user has not completed initial setup, redirect to OAuth page

@@ -19,7 +19,7 @@ module.exports = {
   // The name of your website. Present alongside your icon.
   title: "Kold Creative",
 
-  hideFilesMeta: ["/dead-site"],
+  hideFilesMeta: '/dead-site',
 
   // The folder that you are to share publicly with onedrive-vercel-index. Use '/' if you want to share your root folder.
   baseDirectory: '/Kold',

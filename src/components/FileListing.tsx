@@ -8,7 +8,6 @@ import emojiRegex from 'emoji-regex'
 import dynamic from 'next/dynamic'
 import { useRouter } from 'next/router'
 import { useTranslation } from 'next-i18next'
-import siteConfig from '../../config/site.config';
 
 import useLocalStorage from '../utils/useLocalStorage'
 import { getPreviewType, preview } from '../utils/getPreviewType'
@@ -37,11 +36,6 @@ import URLPreview from './previews/URLPreview'
 import ImagePreview from './previews/ImagePreview'
 import DefaultPreview from './previews/DefaultPreview'
 import { PreviewContainer } from './previews/Containers'
-import React from 'react';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
-import { ChildIcon, ChildName, Checkbox, Downloading } from './FileListing';
-import siteConfig from '../../config/site.config';
-import type { OdFolderChildren } from '../types';
 
 import FolderListLayout from './FolderListLayout'
 import FolderGridLayout from './FolderGridLayout'
@@ -67,27 +61,6 @@ const queryToPath = (query?: ParsedUrlQuery) => {
   return '/'
 }
 
-const FileListing: FC<{ query?: ParsedUrlQuery }> = ({ query }) => {
-  const path = queryToPath(query);
-
-  // ... existing code
-
-  return (
-    <>
-      <Toaster />
-
-      {layout.name === 'Grid' ? (
-        <FolderGridLayout {...folderProps} path={path} />
-      ) : (
-        <FolderListLayout {...folderProps} path={path} />
-      )}
-
-      {/* ... existing code */}
-    </>
-  );
-};
-
-export default FileListing;
 // Render the icon of a folder child (may be a file or a folder), use emoji if the name of the child contains emoji
 const renderEmoji = (name: string) => {
   const emoji = emojiRegex().exec(name)
@@ -115,56 +88,6 @@ export const ChildIcon: FC<{ child: OdFolderChildren }> = ({ child }) => {
     <FontAwesomeIcon icon={child.file ? getFileIcon(child.name, { video: Boolean(child.video) }) : ['far', 'folder']} />
   )
 }
-
-const shouldHideMeta = (path: string) => {
-  return siteConfig.hideFilesMeta.includes(path);
-};
-
-const FolderGridLayout: React.FC<{
-  folderChildren: OdFolderChildren[];
-  toggleItemSelected: (id: string) => void;
-  totalSelected: 0 | 1 | 2;
-  toggleTotalSelected: () => void;
-  path: string;
-}> = ({ folderChildren, toggleItemSelected, totalSelected, toggleTotalSelected, path }) => {
-  const hideMeta = shouldHideMeta(path);
-
-  return (
-    <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-      {folderChildren.map(child => (
-        <div key={child.id} className="flex items-center space-x-4 p-4 border rounded-md">
-          <Checkbox
-            checked={child.id in folderChildren}
-            onChange={() => toggleItemSelected(child.id)}
-            title={`Select ${child.name}`}
-          />
-          <div className="flex-shrink-0">
-            <ChildIcon child={child} />
-          </div>
-          <div className="flex-grow truncate">
-            <ChildName name={child.name} folder={child.folder} />
-          </div>
-          {!hideMeta && (
-            <>
-              <div className="hidden sm:block text-sm text-gray-500">
-                {new Date(child.lastModifiedDateTime).toLocaleString()}
-              </div>
-              <div className="hidden sm:block text-sm text-gray-500">
-                {child.size}
-              </div>
-            </>
-          )}
-          <Downloading
-            title="Downloading..."
-            style={`opacity-0 transition-opacity duration-300 ease-in-out ${child.downloading ? 'opacity-100' : ''}`}
-          />
-        </div>
-      ))}
-    </div>
-  );
-};
-
-export default FolderGridLayout;
 
 export const Checkbox: FC<{
   checked: 0 | 1 | 2

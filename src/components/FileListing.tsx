@@ -45,7 +45,7 @@ const EPUBPreview = dynamic(() => import('./previews/EPUBPreview'), {
   ssr: false,
 })
 
-import siteConfig from '../site.config.js' // Import site config
+import siteConfig from '../../config/site.config' // Import site config
 
 /**
  * Convert url query into path string

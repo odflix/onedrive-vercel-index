@@ -10,6 +10,7 @@ import { getBaseUrl } from '../utils/getBaseUrl'
 import { formatModifiedDateTime } from '../utils/fileDetails'
 import { Checkbox, ChildIcon, ChildName, Downloading } from './FileListing'
 import { getStoredToken } from '../utils/protectedRouteHandler'
+import siteConfig from '../site.config.js' // Import site config
 
 const GridItem = ({ c, path }: { c: OdFolderChildren; path: string }) => {
   // We use the generated medium thumbnail for rendering preview images (excluding folders)
@@ -19,6 +20,9 @@ const GridItem = ({ c, path }: { c: OdFolderChildren; path: string }) => {
 
   // Some thumbnails are broken, so we check for onerror event in the image component
   const [brokenThumbnail, setBrokenThumbnail] = useState(false)
+
+  // Check if the path is in the hideFilesMeta list
+  const shouldHideMeta = siteConfig.hideFilesMeta.includes(path)
 
   return (
     <div className="space-y-2">
@@ -47,9 +51,11 @@ const GridItem = ({ c, path }: { c: OdFolderChildren; path: string }) => {
         </span>
         <ChildName name={c.name} folder={Boolean(c.folder)} />
       </div>
-      <div className="truncate text-center font-mono text-xs text-gray-700 dark:text-gray-500">
-        {formatModifiedDateTime(c.lastModifiedDateTime)}
-      </div>
+      {!shouldHideMeta && (
+        <div className="truncate text-center font-mono text-xs text-gray-700 dark:text-gray-500">
+          {formatModifiedDateTime(c.lastModifiedDateTime)}
+        </div>
+      )}
     </div>
   )
 }
